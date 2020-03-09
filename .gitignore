@@ -19,3 +19,10 @@ __pycache__/
 *$py.class
 
 .idea/
+.vscode/
+
+# local dev tool
+node_modules/
+gulpfile.js
+package.json
+yarn.lock

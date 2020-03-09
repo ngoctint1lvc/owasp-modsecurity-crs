@@ -1,3 +1,4 @@
+from time import sleep
 from ftw import ruleset, logchecker, testrunner
 import datetime
 import pytest
@@ -10,6 +11,7 @@ def test_crs(ruleset, test, logchecker_obj):
     runner = testrunner.TestRunner()
     for stage in test.stages:
         runner.run_stage(stage, logchecker_obj)
+        sleep(0.5)
 
 
 class FooLogChecker(logchecker.LogChecker):
