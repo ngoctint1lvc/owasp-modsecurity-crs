@@ -2,17 +2,27 @@ from time import sleep
 from ftw import ruleset, logchecker, testrunner
 import datetime
 import pytest
-import sys
 import re
 import os
+from .testwriter import CSVWriter
 
-
-def test_crs(ruleset, test, logchecker_obj):
+def test_crs(ruleset, test, logchecker_obj, csv_writer):
     runner = testrunner.TestRunner()
     for stage in test.stages:
-        runner.run_stage(stage, logchecker_obj)
-        sleep(0.5)
+        result, log_data = runner.run_stage(stage, logchecker_obj)
+        test_data = {
+            'id': f"{ruleset.meta['name']}-{csv_writer.numTest}",
+            'description': test.test_title,
+            'test_result': "OK" if result else "FAILED",
+            'expect_behavior': "BLOCKED",
+            'true_behavior': "BLOCKED" if result else "NOT_BLOCKED",
+            'url': stage.input.uri,
+            'data': stage.input.data,
+            'log_message': log_data
+        }
 
+        csv_writer.append(test_data)
+        assert result
 
 class FooLogChecker(logchecker.LogChecker):
     def __init__(self, config):
@@ -64,3 +74,7 @@ class FooLogChecker(logchecker.LogChecker):
 @pytest.fixture(scope='session')
 def logchecker_obj(config):
     return FooLogChecker(config)
+
+@pytest.fixture(scope='session')
+def csv_writer():
+    return CSVWriter("output.csv")

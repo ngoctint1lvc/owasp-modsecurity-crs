@@ -1,0 +1,21 @@
+---
+meta:
+  author: "ngoctin"
+  enabled: true
+  name: "other"
+  description: "Polaris Custom rules test"
+tests:
+  - test_title: "Server side template injection in URI 1"
+    stages:
+      - stage:
+          input:
+            dest_addr: "tin.acbpro.com"
+            method: "GET"
+            port: 80
+            headers:
+              Host: "tin.acbpro.com"
+              User-Agent: "ModSecurity CRS 3 Tests"
+              Cookie: "x_polaris_sid=bgocv63bpr8l1mfdof10ea32llvvgmpdtpgfru7j94o900; polaris_no_cookie_debug=1337x"
+            uri: "/?param=%3C%25%3D+1%2A1%25%3E" # urlencode("<%= 1*1%>")
+          output:
+            log_contains: '"id":"666666006"'

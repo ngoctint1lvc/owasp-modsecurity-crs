@@ -22,6 +22,6 @@ tests:
             uri: "/"
             method: "POST"
             version: "HTTP/1.0"
-            data: '"{\"username\": {\"$eq\": \"admin\"}, \"password\": {\"$regex\": \"^m\" }}"'
+            data: "{\"username\": {\"$eq\": \"admin\"}, \"password\": {\"$regex\": \"^m\" }}"
           output:
-            log_contains: 'id "999999004"'
+            log_contains: 'id "666666004"'
