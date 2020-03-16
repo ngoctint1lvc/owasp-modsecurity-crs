@@ -1,1 +1,1 @@
-ftw==1.1.7
+git+https://github.com/ngoctint1lvc/ftw.git@polaris

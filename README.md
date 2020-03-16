@@ -1,29 +1,137 @@
-![Travis build v3.3/dev](https://img.shields.io/travis/spiderlabs/owasp-modsecurity-crs/v3.3/dev?label=v3.3%2Fdev)
-![Travis build v3.2/dev](https://img.shields.io/travis/spiderlabs/owasp-modsecurity-crs/v3.2/dev?label=v3.2%2Fdev)
-![Travis build v3.1/dev](https://img.shields.io/travis/spiderlabs/owasp-modsecurity-crs/v3.1/dev?label=v3.1%2Fdev)
-[![OWASP Flagship](https://img.shields.io/badge/owasp-flagship%20project-38a047.svg)](https://www.owasp.org/index.php/OWASP_Project_Inventory#tab=Flagship_Projects)
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/1390/badge)](https://bestpractices.coreinfrastructure.org/projects/1390)
+# ModSecurity Core Rule Set
 
-# OWASP ModSecurity Core Rule Set (CRS)
+## Download and install
 
-The OWASP ModSecurity Core Rule Set (CRS) is a set of generic attack detection rules for use with ModSecurity or compatible web application firewalls. The CRS aims to protect web applications from a wide range of attacks, including the OWASP Top Ten, with a minimum of false alerts.
+### Clone this repo and checkout polaris branch
 
-## CRS Resources
+```
+git clone https://github.com/ngoctint1lvc/owasp-modsecurity-crs.git
+git checkout polaris
+```
 
-Please see the [OWASP ModSecurity Core Rule Set page](https://coreruleset.org/) to get introduced to the CRS and view resources on installation, configuration, and working with the CRS.
+### Hot reload rules
 
-## Contributing to the CRS
+Custom rules is located at `./custom-rules` folder. You can add more rules inside this folder. To hot reload newly added rules, modify `gulpfile.js` and run gulp command.
 
-We strive to make the OWASP ModSecurity CRS accessible to a wide audience of beginner and experienced users. We are interested in hearing any bug reports, false positive alert reports, evasions, usability issues, and suggestions for new detections.
+All support gulp tasks
 
-[Create an issue on GitHub](https://github.com/SpiderLabs/owasp-modsecurity-crs/issues) to report a false positive or false negative (evasion). Please include your installed version and the relevant portions of your ModSecurity audit log.
+```
+[14:10:31] Tasks for /mnt/shared-data/project/owasp-modsecurity-crs/gulpfile.js
+[14:10:31] ├── default  // watching rule files and auto reload WAF
+[14:10:31] ├── reloadCrs    // force to reload CRS
+[14:10:31] └── reloadRule   // force to reload custom rules
+```
 
-[Sign up for our Google Group](https://groups.google.com/a/owasp.org/forum/#!forum/modsecurity-core-rule-set-project) to ask general usage questions and participate in discussions on the CRS. Also [here](https://lists.owasp.org/pipermail/owasp-modsecurity-core-rule-set/index) you can find the archives for the previous mailing list.
+To begin develop, install and start ModSecurity WAF from https://github.com/ngoctint1lvc/waf.
 
-[Join the #coreruleset channel on OWASP Slack](http://owaspslack.com) to chat about the CRS.
+After running ModSecurity WAF, go to project folder run command
+```
+yarn
+gulp
+```
 
-## License
+### Prepare testing tool
 
-Copyright (c) 2006-2019 Trustwave and contributors. All rights reserved.
+Create python3 virtual environment for project and install required packages
 
-The OWASP ModSecurity Core Rule Set is distributed under Apache Software License (ASL) version 2. Please see the enclosed LICENSE file for full details.
+```
+mkvirtualenv crs-test -p python3
+workon crs-test
+cd ./tests/regression/
+pip install -r requirements.txt
+```
+
+**Note:** python virtualenvwrapper and virtualenv should be installed first.
+
+### Add new rules and testcases
+
+Example rule in `./custom-rules/POLARIS-CUSTOM-RULES.conf`
+
+```bash
+# Prevent <!ENTITY something SYSTEM "something" pattern
+# Ref: https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XXE%20Injection#exploiting-xxe-to-retrieve-files
+SecRule REQUEST_BODY "@rx <!entity\s+[^>]*?\s+system\s+" \
+    "id:666666001,\
+    phase:2,\
+    deny,\
+    t:none,t:lowercase,t:utf8toUnicode,t:urlDecodeUni,t:htmlEntityDecode,t:removeNulls,\
+    msg:'XXE Attack detected by Polaris custom rules',\
+    logdata:'Matched Data: XXE data found within %{MATCHED_VAR_NAME}: %{MATCHED_VAR}',\
+    tag:'application-multi',\
+    tag:'language-multi',\
+    tag:'platform-multi',\
+    tag:'attack-xxe',\
+    tag:'polaris-custom-rules'"
+```
+
+Example testcase in `./tests/regression/tests/POLARIS-CUSTOM-RULES/000-xxe.yaml`
+
+```yaml
+tests:
+  - test_title: "XXE Attack 1"
+    stages:
+      - stage:
+          input:
+            dest_addr: "127.0.0.1"
+            port: 80
+            headers:
+              Host: "localhost"
+              User-Agent: "ModSecurity CRS 3 Tests"
+              Accept: "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+              Accept-Charset: "ISO-8859-1,utf-8;q=0.7,*;q=0.7"
+              Accept-Encoding: "gzip,deflate"
+              Accept-Language: "en-us,en;q=0.5"
+              Content-Type: "application/x-www-form-urlencoded"
+            method: "POST"
+            version: "HTTP/1.0"
+            data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE foo [ <!ENTITY xxe SYSTEM \"file:///etc/passwd\"> ]>\n<stockCheck><productId>&xxe;</productId></stockCheck>"
+          output:
+            log_contains: 'id "666666001"'
+```
+
+**Note:**
+- Test case for ModSecurity WAF is in `./tests/regression/tests/POLARIS-CUSTOM-RULES/` folder
+- Test case for Polaris Lua WAF is in `./tests/regression/tests/POLARIS-WAF-DEV/` folder
+
+After saving newly added rules, check if gulp is still running and rules is reload. This is example output
+```bash
+[14:49:56] Using gulpfile /mnt/shared-data/project/owasp-modsecurity-crs/gulpfile.js
+[14:49:56] Starting 'default'...
+[14:50:46] Starting 'reloadCustomRule'...
+[14:50:48] Finished 'reloadCustomRule' after 1.76 s
+```
+
+## Running
+
+### Running test with ModSecurity WAF
+```bash
+cd ./tests/regression/
+workon crs-test
+py.test -v CRS_Tests.py --rule ./tests/POLARIS-CUSTOM-RULES/
+```
+
+### Running test with Polaris WAF
+
+Forward log files content of polaris WAF to local `/tmp/log.txt` file
+```bash
+ssh -t ngoctin@34.73.157.12 docker logs -f proxy | grep --line-buffered -P 'ModSecurity DENY(?=.*?tin.acbpro.com)' > /tmp/log.txt
+```
+
+Open other terminal and run test. This tool will check log content in `/tmp/log.txt` to test whether current polaris WAF rule is triggered or not.
+```bash
+cd ./tests/regression/
+workon crs-test
+py.test --config waf-lua -v CRS_Tests.py --rule ./tests/regression/tests/POLARIS-WAF-DEV/
+```
+
+Log file format, and location of log file can be changed in `./tests/regression/config.ini`
+```ini
+[waf-lua]
+log_date_format = %Y/%m/%d %H:%M:%S
+log_date_regex = (\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2})
+log_location_linux = /tmp/log.txt
+```
+
+Output of test result can be founed at `./tests/regression/output.csv`.
+
+**Note:** If all rules are failed, maybe you have some problem with network or timezone. Try to change WAF timezone to UTC.
