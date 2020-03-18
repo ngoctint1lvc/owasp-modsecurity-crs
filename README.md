@@ -38,6 +38,7 @@ Create python3 virtual environment for project and install required packages
 mkvirtualenv crs-test -p python3
 workon crs-test
 cd ./tests/regression/
+pip install pytest
 pip install -r requirements.txt
 ```
 
@@ -114,14 +115,40 @@ py.test -v CRS_Tests.py --rule ./tests/POLARIS-CUSTOM-RULES/
 
 Forward log files content of polaris WAF to local `/tmp/log.txt` file
 ```bash
-ssh -t ngoctin@34.73.157.12 docker logs -f proxy | grep --line-buffered -P 'ModSecurity DENY(?=.*?tin.acbpro.com)' > /tmp/log.txt
+ssh -t ngoctin@34.73.157.12 docker logs -f proxy | grep --line-buffered -P '.*?tin.acbpro.com' > /tmp/log.txt
 ```
 
 Open other terminal and run test. This tool will check log content in `/tmp/log.txt` to test whether current polaris WAF rule is triggered or not.
+
+Convert testcase from ModSecurity WAF to Polaris WAF. Go to folder of transform-testcase tool.
+```bash
+cd ./tests/tools/transform-testcase/
+```
+
+Run this command once to copy and transform all testcases
+```
+python transform.py
+```
+
+Run this command to transform testcases based on glob pattern
+```
+python transform.py "../../regression/polaris-tests/POLARIS-CUSTOM-RULES/*.yaml"
+```
+
+Output
+```
+[+] Transform testcase ../../regression/polaris-tests/POLARIS-CUSTOM-RULES/000-xxe.yaml
+[+] Transform testcase ../../regression/polaris-tests/POLARIS-CUSTOM-RULES/001-nosqli.yaml
+[+] Transform testcase ../../regression/polaris-tests/POLARIS-CUSTOM-RULES/002-template-injection.yaml
+[+] Transform testcase ../../regression/polaris-tests/POLARIS-CUSTOM-RULES/test.yaml
+```
+
+Transformed testcases will be located in `./tests/regression/polaris-tests/` folder.
+
 ```bash
 cd ./tests/regression/
 workon crs-test
-py.test --config waf-lua -v CRS_Tests.py --rule ./tests/regression/tests/POLARIS-WAF-DEV/
+py.test --config waf-lua -v CRS_Tests.py --rule ./polaris-tests/POLARIS-CUSTOM-RULES/
 ```
 
 Log file format, and location of log file can be changed in `./tests/regression/config.ini`

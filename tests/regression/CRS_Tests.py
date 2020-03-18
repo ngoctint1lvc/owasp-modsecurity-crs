@@ -1,5 +1,4 @@
-from time import sleep
-from ftw import ruleset, logchecker, testrunner
+from ftw import logchecker, testrunner
 import datetime
 import pytest
 import re
