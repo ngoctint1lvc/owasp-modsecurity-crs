@@ -115,7 +115,7 @@ py.test -v CRS_Tests.py --rule ./tests/POLARIS-CUSTOM-RULES/
 
 Forward log files content of polaris WAF to local `/tmp/log.txt` file
 ```bash
-ssh -t ngoctin@34.73.157.12 docker logs -f proxy | grep --line-buffered -P '.*?tin.acbpro.com' > /tmp/log.txt
+ssh -t ngoctin@34.73.157.12 docker logs -f proxy --since=0m | grep --line-buffered -P '.*?tin.acbpro.com' > /tmp/log.txt
 ```
 
 Open other terminal and run test. This tool will check log content in `/tmp/log.txt` to test whether current polaris WAF rule is triggered or not.
@@ -130,9 +130,9 @@ Run this command once to copy and transform all testcases
 python transform.py
 ```
 
-Run this command to transform testcases based on glob pattern
+Run this command to transform specific testcases
 ```
-python transform.py "../../regression/polaris-tests/POLARIS-CUSTOM-RULES/*.yaml"
+python transform.py ../../regression/polaris-tests/POLARIS-CUSTOM-RULES/*.yaml
 ```
 
 Output
