@@ -5,7 +5,7 @@ meta:
   name: "nosqli.yaml"
   description: "Polaris Custom rules test"
 tests:
-  - test_title: "NoSQL injection in URI 1"
+  - test_title: "666666003 - NoSQL injection in URI 1"
     stages:
       - stage:
           input:
@@ -18,7 +18,7 @@ tests:
             uri: "/?username[$ge]=a"
           output:
             log_contains: 'id "666666003"'
-  - test_title: "NoSQL injection in URI 2"
+  - test_title: "666666003 - NoSQL injection in URI 2"
     stages:
       - stage:
           input:
@@ -31,7 +31,7 @@ tests:
             uri: "/?username[$ne]=toto&password[$regex]=m.*"
           output:
             log_contains: 'id "666666003"'
-  - test_title: "NoSQL injection in JSON body"
+  - test_title: "666666004 - NoSQL injection in JSON body"
     stages:
       - stage:
           input:
@@ -51,7 +51,7 @@ tests:
             data: "{\"username\": {\"$eq\": \"admin\"}, \"password\": {\"$regex\": \"^m\" }}"
           output:
             log_contains: 'id "666666004"'
-  - test_title: "MongoDB injection in $where expression 1"
+  - test_title: "666666005 - MongoDB injection in $where expression 1"
     stages:
       - stage:
           input:
@@ -64,7 +64,7 @@ tests:
             uri: "/?username=a' || 'a'=='a"
           output:
             log_contains: 'id "666666005"'
-  - test_title: "MongoDB injection in $where expression 2"
+  - test_title: "666666005 - MongoDB injection in $where expression 2"
     stages:
       - stage:
           input:
@@ -84,7 +84,7 @@ tests:
             data: "----------------------------182751749058134166261253\r\nContent-Disposition: form-data; name=\"username\"\r\n\r\na' || 'a'=='a\r\n----------------------------182751749058134166261253--"
           output:
             log_contains: 'id "666666005"'
-  - test_title: "MongoDB injection in $where expression 3"
+  - test_title: "666666005 - MongoDB injection in $where expression 3"
     stages:
       - stage:
           input:

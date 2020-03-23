@@ -3,9 +3,10 @@ import os
 import yaml
 import sys
 import re
+import sys
 
 curdir = os.getcwd()
-fileDir = os.path.dirname(__file__)
+fileDir = os.path.dirname(sys.argv[0])
 
 print("[+] Sync testcases from modsecurity")
 os.chdir(fileDir)
@@ -13,14 +14,14 @@ os.system("rsync -avh ../../regression/tests/* ../../regression/polaris-tests")
 os.chdir(curdir)
 
 print("[+] Transform testcase for polaris waf")
-pattern = os.path.join(fileDir, "../../regression/polaris-tests/**/*.yaml") if len(sys.argv) < 2 else sys.argv[1]
+testcases = glob.glob(os.path.join(fileDir, "../../regression/polaris-tests/**/*.yaml")) if len(sys.argv) < 2 else sys.argv[1:]
 
-for testcase in glob.glob(pattern):
+for testcase in testcases:
     print(f" [+] Transform testcase {testcase}")
     data = ''
     with open(testcase, 'r') as stream:
         try:
-            data = yaml.load(stream)
+            data = yaml.safe_load(stream)
             for test in data["tests"]:
                 for stage in test["stages"]:
                     # update destination address to polaris waf
@@ -61,4 +62,4 @@ for testcase in glob.glob(pattern):
             print(err)
     
     with open(testcase, 'w') as stream:
-        yaml.dump(data, stream)
+        yaml.dump(data, stream, default_flow_style=False, allow_unicode=True)

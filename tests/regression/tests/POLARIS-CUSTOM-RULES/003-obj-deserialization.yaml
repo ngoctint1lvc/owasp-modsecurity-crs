@@ -1,0 +1,138 @@
+---
+meta:
+  author: "ngoctin"
+  enabled: true
+  name: "obj-deserialization.yaml"
+  description: "Polaris Custom rules test"
+tests:
+  - test_title: "666666007 - Pickle deserialization injection 1"
+    stages:
+      - stage:
+          input:
+            dest_addr: "localhost"
+            method: "GET"
+            port: 80
+            headers:
+              Host: "localhost"
+              User-Agent: "ModSecurity CRS 3 Tests"
+              Cookie: "cookie1=Y3Bvc2l4CnN5c3RlbQpwMQooUydscyAtbCcKcDIKdHAzClJwNAou; cookie2=x"
+            uri: "/obj-serialization"
+          output:
+            log_contains: 'id "666666007"'
+  - test_title: "666666007 - Pickle deserialization injection 2"
+    stages:
+      - stage:
+          input:
+            dest_addr: "localhost"
+            method: "GET"
+            port: 80
+            headers:
+              Host: "localhost"
+              User-Agent: "ModSecurity CRS 3 Tests"
+            uri: "/obj-serialization?param=Y3Bvc2l4CnN5c3RlbQpwMQooUydscyAtbCcKcDIKdHAzClJwNAou"
+          output:
+            log_contains: 'id "666666007"'
+  - test_title: "666666007 - Pickle deserialization injection 3"
+    stages:
+      - stage:
+          input:
+            dest_addr: "localhost"
+            port: 80
+            headers:
+              Host: "localhost"
+              User-Agent: "ModSecurity CRS 3 Tests"
+              Accept: "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+              Accept-Charset: "ISO-8859-1,utf-8;q=0.7,*;q=0.7"
+              Accept-Encoding: "gzip,deflate"
+              Accept-Language: "en-us,en;q=0.5"
+              Content-Type: "application/json"
+            uri: "/"
+            method: "POST"
+            version: "HTTP/1.1"
+            data: "{\"param\": \"Y3Bvc2l4CnN5c3RlbQpwMQooUydscyAtbCcKcDIKdHAzClJwNAou\"}"
+          output:
+            log_contains: 'id "666666007"'
+  - test_title: "666666008 - Pickle deserialization injection 4"
+    stages:
+      - stage:
+          input:
+            dest_addr: "localhost"
+            method: "GET"
+            port: 80
+            headers:
+              Host: "localhost"
+              User-Agent: "ModSecurity CRS 3 Tests"
+              Cookie: "cookie1=Y3N1YnByb2Nlc3MKUG9wZW4KcDEKKFMnd2hvYW1pJwpwMgp0cDMKUnA0Ci4%3D; cookie2=x"
+            uri: "/obj-serialization"
+          output:
+            log_contains: 'id "666666008"'
+  - test_title: "666666008 - Pickle deserialization injection 5"
+    stages:
+      - stage:
+          input:
+            dest_addr: "localhost"
+            method: "GET"
+            port: 80
+            headers:
+              Host: "localhost"
+              User-Agent: "ModSecurity CRS 3 Tests"
+            uri: "/obj-serialization?param=Y3N1YnByb2Nlc3MKUG9wZW4KcDEKKFMnd2hvYW1pJwpwMgp0cDMKUnA0Ci4%3D"
+          output:
+            log_contains: 'id "666666008"'
+  - test_title: "666666008 - Pickle deserialization injection 6"
+    stages:
+      - stage:
+          input:
+            dest_addr: "localhost"
+            port: 80
+            headers:
+              Host: "localhost"
+              User-Agent: "ModSecurity CRS 3 Tests"
+              Accept: "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+              Accept-Charset: "ISO-8859-1,utf-8;q=0.7,*;q=0.7"
+              Accept-Encoding: "gzip,deflate"
+              Accept-Language: "en-us,en;q=0.5"
+              Content-Type: "application/json"
+            uri: "/"
+            method: "POST"
+            version: "HTTP/1.1"
+            data: "{\"param\": \"Y3N1YnByb2Nlc3MKUG9wZW4KcDEKKFMnd2hvYW1pJwpwMgp0cDMKUnA0Ci4=\"}"
+          output:
+            log_contains: 'id "666666008"'
+  - test_title: "666666009 - PHP deserialization injection in body 1"
+    stages:
+      - stage:
+          input:
+            dest_addr: "localhost"
+            port: 80
+            headers:
+              Host: "localhost"
+              User-Agent: "ModSecurity CRS 3 Tests"
+              Accept: "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+              Accept-Charset: "ISO-8859-1,utf-8;q=0.7,*;q=0.7"
+              Accept-Encoding: "gzip,deflate"
+              Accept-Language: "en-us,en;q=0.5"
+              Content-Type: "application/json"
+            uri: "/"
+            method: "POST"
+            version: "HTTP/1.1"
+            data: "O:33:\"Swift_Transport_SendmailTransport\":3:{s:10:\"*_buffer\";O:31:\"Swift_ByteStream_FileByteStream\":4:{s:38:\"Swift_ByteStream_FileByteStream_path\";s:14:\"/tmp/pwned.php\";s:38:\"Swift_ByteStream_FileByteStream_mode\";s:3:\"w+b\";s:56:\"Swift_ByteStream_AbstractFilterableInputStream_filters\";a:0:{}s:60:\"Swift_ByteStream_AbstractFilterableInputStream_writeBuffer\";s:57:\"<?php system($_GET['exec']); ?> // fedef@secsignal.org\r\n//\";}s:11:\"*_started\";b:1;s:19:\"*_eventDispatcher\";O:34:\"Swift_Events_SimpleEventDispatcher\":0:{}}"
+          output:
+            log_contains: 'id "666666009"'
+  - test_title: "666666009 - PHP deserialization injection in body 2"
+    stages:
+      - stage:
+          input:
+            dest_addr: "localhost"
+            port: 80
+            headers:
+              Host: "localhost"
+              User-Agent: "ModSecurity CRS 3 Tests"
+              Accept: "*/*"
+              Content-Type: "multipart/form-data; boundary=------------------------ad5518c7f28640f0"
+            uri: "/"
+            method: "POST"
+            version: "HTTP/1.1"
+            data: "--------------------------ad5518c7f28640f0\r\nContent-Disposition: form-data; name=\"data\"; filename=\"data.dump\"\r\nContent-Type: application/octet-stream\r\n\r\nO:33:\"Swift_Transport_SendmailTransport\":3:{s:10:\"*_buffer\";O:31:\"Swift_ByteStream_FileByteStream\":4:{s:38:\"Swift_ByteStream_FileByteStream_path\";s:14:\"/tmp/pwned.php\";s:38:\"Swift_ByteStream_FileByteStream_mode\";s:3:\"w+b\";s:56:\"Swift_ByteStream_AbstractFilterableInputStream_filters\";a:0:{}s:60:\"Swift_ByteStream_AbstractFilterableInputStream_writeBuffer\";s:57:\"<?php system($_GET['exec']); ?> // fedef@secsignal.org\r\n//\";}s:11:\"*_started\";b:1;s:19:\"*_eventDispatcher\";O:34:\"Swift_Events_SimpleEventDispatcher\":0:{}}\r\n\r\n--------------------------ad5518c7f28640f0--"
+          output:
+            log_contains: 'id "666666009"'

@@ -5,7 +5,7 @@ meta:
   name: "template-injection.yaml"
   description: "Polaris Custom rules test"
 tests:
-  - test_title: "Server side template injection in URI 1"
+  - test_title: "666666006 - Server side template injection in URI 1"
     stages:
       - stage:
           input:
@@ -18,7 +18,7 @@ tests:
             uri: "/?param=%3C%25%3D+1%2A1%25%3E" # urlencode("<%= 1*1%>")
           output:
             log_contains: 'id "666666006"'
-  - test_title: "Server side template injection in URI 2"
+  - test_title: "666666006 - Server side template injection in URI 2"
     stages:
       - stage:
           input:
@@ -31,7 +31,7 @@ tests:
             uri: "/?param=%23%7B+1%2A1%7D" # urlencode("#{ 1*1}")
           output:
             log_contains: 'id "666666006"'
-  - test_title: "Server side template injection in URI 3"
+  - test_title: "666666006 - Server side template injection in URI 3"
     stages:
       - stage:
           input:
@@ -44,7 +44,7 @@ tests:
             uri: "/?param=${class.getResource(\"\").getPath()}"
           output:
             log_contains: 'id "666666006"'
-  - test_title: "Server side template injection in URI 4"
+  - test_title: "666666006 - Server side template injection in URI 4"
     stages:
       - stage:
           input:
@@ -57,7 +57,7 @@ tests:
             uri: "/?param=${{7*7}}"
           output:
             log_contains: 'id "666666006"'
-  - test_title: "Server side template injection in URI 5"
+  - test_title: "666666006 - Server side template injection in URI 5"
     stages:
       - stage:
           input:
