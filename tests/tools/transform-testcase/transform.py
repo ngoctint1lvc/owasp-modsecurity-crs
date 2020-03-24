@@ -8,10 +8,11 @@ import sys
 curdir = os.getcwd()
 fileDir = os.path.dirname(sys.argv[0])
 
-print("[+] Sync testcases from modsecurity")
-os.chdir(fileDir)
-os.system("rsync -avh ../../regression/tests/* ../../regression/polaris-tests")
-os.chdir(curdir)
+if len(sys.argv) < 2:
+    print("[+] Sync testcases from modsecurity")
+    os.chdir(fileDir)
+    os.system("rsync -avh ../../regression/tests/* ../../regression/polaris-tests")
+    os.chdir(curdir)
 
 print("[+] Transform testcase for polaris waf")
 testcases = glob.glob(os.path.join(fileDir, "../../regression/polaris-tests/**/*.yaml")) if len(sys.argv) < 2 else sys.argv[1:]

