@@ -1,3 +1,5 @@
+#!python
+
 def stringEscape(payload):
     return '"' + payload.replace("\n", "\\r\\n").replace("\t", "\\t").replace('"', '\\"') + '"'
 

@@ -6,16 +6,16 @@ import re
 import sys
 
 curdir = os.getcwd()
-fileDir = os.path.dirname(sys.argv[0])
+test_regression_dir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), "../../tests/regression"))
 
 if len(sys.argv) < 2:
     print("[+] Sync testcases from modsecurity")
-    os.chdir(fileDir)
-    os.system("rsync -avh ../../regression/tests/* ../../regression/polaris-tests")
+    os.chdir(test_regression_dir)
+    os.system("rsync -avh tests/* polaris-tests")
     os.chdir(curdir)
 
 print("[+] Transform testcase for polaris waf")
-testcases = glob.glob(os.path.join(fileDir, "../../regression/polaris-tests/**/*.yaml")) if len(sys.argv) < 2 else sys.argv[1:]
+testcases = glob.glob(os.path.join(test_regression_dir, "polaris-tests/**/*.yaml")) if len(sys.argv) < 2 else sys.argv[1:]
 
 for testcase in testcases:
     print(f" [+] Transform testcase {testcase}")
@@ -58,6 +58,10 @@ for testcase in testcases:
                     # change port to 80
                     if "port" in stage["stage"]["input"].keys():
                         stage["stage"]["input"]["port"] = 80
+
+                    # add 403 forbiden check
+                    if "response_contains" not in stage["stage"]["output"].keys():
+                        stage["stage"]["output"]["response_contains"] = "403 Forbidden"
 
         except yaml.YAMLError as err:
             print(err)
