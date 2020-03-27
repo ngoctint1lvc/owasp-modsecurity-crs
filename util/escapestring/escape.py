@@ -1,7 +1,7 @@
 #!python
 
 def stringEscape(payload):
-    return '"' + payload.replace("\n", "\\r\\n").replace("\t", "\\t").replace('"', '\\"') + '"'
+    return '"' + payload.replace("\\", "\\\\").replace("\n", "\\r\\n").replace("\t", "\\t").replace('"', '\\"') + '"'
 
 inFile = open("./in.txt", "r")
 payload = inFile.read()
