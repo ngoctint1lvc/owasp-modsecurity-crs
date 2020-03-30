@@ -6,18 +6,10 @@ async function getCategories() {
     let res = await fetch(env.url + "/api/attack-vector/category", {
         credentials: "include",
         headers: {
-            accept: "*/*",
-            "accept-language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7",
-            authorization: env.token,
-            "cache-control": "no-cache",
-            pragma: "no-cache",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin"
+            authorization: env.token
         },
         body: null,
-        method: "GET",
-        mode: "cors"
+        method: "GET"
     })
         .then(res => res.json())
         .catch(console.error);
@@ -30,19 +22,11 @@ async function addRule(rule) {
     let res = await fetch(env.url + "/api/admin/one-day-rule", {
         credentials: "include",
         headers: {
-            accept: "*/*",
-            "accept-language": "en-US,en;q=0.9,vi-VN;q=0.8,vi;q=0.7",
             authorization: env.token,
-            "cache-control": "no-cache",
-            "content-type": "application/json",
-            pragma: "no-cache",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin"
+            "content-type": "application/json"
         },
         body: JSON.stringify(rule),
-        method: "POST",
-        mode: "cors"
+        method: "POST"
     })
         .then(res => res.json())
         .catch(console.error);
