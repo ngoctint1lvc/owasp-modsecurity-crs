@@ -5,16 +5,42 @@ import re
 import os
 from .testwriter import CSVWriter
 
+
 def test_crs(ruleset, test, logchecker_obj, csv_writer):
     runner = testrunner.TestRunner()
     for stage in test.stages:
-        result, log_data = runner.run_stage(stage, logchecker_obj)
+        try:
+            result, log_data = runner.run_stage(stage, logchecker_obj)
+        except:
+            result = False
+            log_data = ''
+
+        # write expect
+        expect = ""
+        if stage.output.log_contains_str:
+            expect += f"- log contains: {stage.output.log_contains_str.pattern}\n"
+        if stage.output.expect_error:
+            expect += f"- error: {stage.output.expect_error}\n"
+        if stage.output.no_log_contains_str:
+            expect += f"- log not contains: {stage.output.no_log_contains_str.pattern}\n"
+        if stage.output.response_contains_str:
+            expect += f"- response contains: {stage.output.response_contains_str.pattern}\n"
+        if stage.output.status:
+            if type(stage.output.status) is list:
+                expect += f"- status code: {' or '.join(map(lambda i: str(i), stage.output.status))}\n"
+            else:
+                expect += f"- status code: {stage.output.status}\n"
+
+        #     or stage.output.response_contains_str or stage.output.status == 403 or 403 in stage.output.status:
+        #     expect = "BLOCKED"
+        # else:
+        #     expect = "NOT_BLOCKED"
+
         test_data = {
             'id': f"{ruleset.meta['name']}-{csv_writer.numTest}",
             'description': test.test_title,
             'test_result': "OK" if result else "FAILED",
-            'expect_behavior': "BLOCKED",
-            'true_behavior': "BLOCKED" if result else "NOT_BLOCKED",
+            'expect_behavior': expect,
             'url': stage.input.uri,
             'data': stage.input.data,
             'log_message': log_data
@@ -22,6 +48,7 @@ def test_crs(ruleset, test, logchecker_obj, csv_writer):
 
         csv_writer.append(test_data)
         assert result
+
 
 class FooLogChecker(logchecker.LogChecker):
     def __init__(self, config):
@@ -74,6 +101,7 @@ class FooLogChecker(logchecker.LogChecker):
 def logchecker_obj(config):
     return FooLogChecker(config)
 
+
 @pytest.fixture(scope='session')
-def csv_writer():
-    return CSVWriter("output.csv")
+def csv_writer(pytestconfig):
+    return CSVWriter(pytestconfig.getoption("output"))

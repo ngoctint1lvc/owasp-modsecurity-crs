@@ -2,7 +2,7 @@
 meta:
   author: "ngoctin"
   enabled: true
-  name: "obj-deserialization.yaml"
+  name: "object deserialization"
   description: "Polaris Custom rules test"
 tests:
   - test_title: "666666007 - Pickle deserialization injection 1"

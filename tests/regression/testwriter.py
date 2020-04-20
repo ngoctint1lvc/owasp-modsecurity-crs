@@ -13,7 +13,6 @@ class CSVWriter():
             'description',
             'test_result',
             'expect_behavior',
-            'true_behavior',
             'url',
             'data',
             'log_message'

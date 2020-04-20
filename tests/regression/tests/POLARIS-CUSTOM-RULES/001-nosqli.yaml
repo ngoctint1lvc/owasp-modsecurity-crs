@@ -2,7 +2,7 @@
 meta:
   author: "ngoctin"
   enabled: true
-  name: "nosqli.yaml"
+  name: "nosql injection"
   description: "Polaris Custom rules test"
 tests:
   - test_title: "666666003 - NoSQL injection in URI 1"

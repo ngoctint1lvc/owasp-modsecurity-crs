@@ -2,7 +2,7 @@
 meta:
   author: "ngoctin"
   enabled: true
-  name: "template-injection.yaml"
+  name: "template injection"
   description: "Polaris Custom rules test"
 tests:
   - test_title: "666666006 - Server side template injection in URI 1"

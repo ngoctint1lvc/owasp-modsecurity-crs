@@ -1,0 +1,4 @@
+.vscode
+openresty/logs
+openresty/etc/modsecurity-crs/custom-rules
+.pytest_cache

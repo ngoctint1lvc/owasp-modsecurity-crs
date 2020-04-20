@@ -1,0 +1,67 @@
+---
+meta:
+  author: "ngoctin"
+  enabled: true
+  name: "command injection"
+  description: "Polaris Custom rules test"
+tests:
+  - test_title: "666666010 - Command injection prevent wildcard 1"
+    stages:
+      - stage:
+          input:
+            dest_addr: 127.0.0.1
+            headers:
+              Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
+              Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+              Accept-Encoding: gzip,deflate
+              Accept-Language: en-us,en;q=0.5
+              Host: localhost
+              User-Agent: "ModSecurity CRS 3 Tests"
+            method: GET
+            port: 80
+            # ; /b?n/c?t /e?c/pas?wd
+            uri: /?cmd=%3B%20%2Fb%3Fn%2Fc%3Ft%20%2Fe%3Fc%2Fpas%3Fwd
+            version: HTTP/1.0
+          output:
+            log_contains: 'id "666666010"'
+            response_contains: "403 Forbidden"
+  - test_title: "666666010 - Command injection prevent wildcard 2"
+    stages:
+      - stage:
+          input:
+            dest_addr: 127.0.0.1
+            headers:
+              Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
+              Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+              Accept-Encoding: gzip,deflate
+              Accept-Language: en-us,en;q=0.5
+              Host: localhost
+              User-Agent: "ModSecurity CRS 3 Tests"
+            method: GET
+            port: 80
+            # | /b?n/c?t /e?c/pas?wd
+            uri: /?cmd=%7C%20%2Fb%3Fn%2Fc%3Ft%20%2Fe%3Fc%2Fpas%3Fwd
+            version: HTTP/1.0
+          output:
+            log_contains: 'id "666666010"'
+            response_contains: "403 Forbidden"
+  - test_title: "666666010 - Command injection prevent wildcard 3"
+    stages:
+      - stage:
+          input:
+            dest_addr: 127.0.0.1
+            headers:
+              Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
+              Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+              Accept-Encoding: gzip,deflate
+              Accept-Language: en-us,en;q=0.5
+              Host: localhost
+              User-Agent: "ModSecurity CRS 3 Tests"
+            method: GET
+            port: 80
+            #  `cat /e?c/p?s?wd`
+            uri: /?cmd=%20%60cat%20%2Fe%3Fc%2Fp%3Fs%3Fwd%60
+            version: HTTP/1.0
+          output:
+            log_contains: 'id "666666010"'
+            response_contains: "403 Forbidden"

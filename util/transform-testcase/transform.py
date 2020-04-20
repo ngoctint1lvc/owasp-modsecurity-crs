@@ -33,35 +33,31 @@ for testcase in testcases:
                     if "headers" in stage["stage"]["input"].keys() and "Host" in stage["stage"]["input"]["headers"].keys():
                         stage["stage"]["input"]["headers"]["Host"] = "tin.acbpro.com"
 
+                    # add 403 forbiden check if this is attack testcase
+                    if "response_contains" not in stage["stage"]["output"].keys() and \
+                        "status" not in stage["stage"]["output"].keys() and \
+                        "no_log_contains" not in stage["stage"]["output"].keys():
+                        stage["stage"]["output"]["response_contains"] = "403 Forbidden"
+
                     # change id format
                     if "log_contains" in stage["stage"]["output"].keys():
                         check_log_msg = stage["stage"]["output"]["log_contains"]
-                        result = re.search(r"\"(\d+)\"", check_log_msg)
-
-                        if result:
-                            ruleId = result.group(1)
-                            stage["stage"]["output"]["log_contains"] = f'"id":"{ruleId}"'
-                        else:
+                        try:
+                            stage["stage"]["output"]["log_contains"] = re.sub("id (?=['\"])", "\"id\":", check_log_msg)
+                        except:
                             print(f"[x] Error in {testcase}: {stage}")
 
                     # change id format
                     if "no_log_contains" in stage["stage"]["output"].keys():
                         check_log_msg = stage["stage"]["output"]["no_log_contains"]
-                        result = re.search(r"\"(\d+)\"", check_log_msg)
-
-                        if result:
-                            ruleId = result.group(1)
-                            stage["stage"]["output"]["no_log_contains"] = f'"id":"{ruleId}"'
-                        else:
+                        try:
+                            stage["stage"]["output"]["no_log_contains"] = re.sub("id (?=['\"])", "\"id\":", check_log_msg)
+                        except:
                             print(f"[x] Error in {testcase}: {stage}")
 
                     # change port to 80
                     if "port" in stage["stage"]["input"].keys():
                         stage["stage"]["input"]["port"] = 80
-
-                    # add 403 forbiden check
-                    if "response_contains" not in stage["stage"]["output"].keys():
-                        stage["stage"]["output"]["response_contains"] = "403 Forbidden"
 
         except yaml.YAMLError as err:
             print(err)

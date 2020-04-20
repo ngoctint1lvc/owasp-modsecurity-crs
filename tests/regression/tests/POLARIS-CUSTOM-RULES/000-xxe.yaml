@@ -2,7 +2,7 @@
 meta:
   author: "ngoctin"
   enabled: true
-  name: "xxe.yaml"
+  name: "xxe"
   description: "Polaris Custom rules test"
 tests:
   - test_title: "666666001 - XXE Attack 1"

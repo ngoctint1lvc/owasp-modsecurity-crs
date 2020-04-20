@@ -9,6 +9,26 @@ git clone https://github.com/ngoctint1lvc/owasp-modsecurity-crs.git
 git checkout polaris
 ```
 
+### Run the WAF
+
+You need to add 2 local domain in `/etc/hosts` file
+```txt
+127.0.0.1 dvwa.test   # for dvwa server
+127.0.0.1 nginx.test  # for empty nginx server
+```
+
+Then, you have been already to bring all docker service up
+```
+cd waf/
+docker-compose up -d
+```
+
+Go to your browser and go to 2 links below to check whether your setup works
+```
+http://nginx.test
+http://dvwa.test
+```
+
 ### Hot reload rules
 
 Custom rules is located at `./custom-rules` folder. You can add more rules inside this folder. To hot reload newly added rules, modify `gulpfile.js` and run gulp command.
@@ -22,9 +42,7 @@ All support gulp tasks
 [14:10:31] └── reloadRule   // force to reload custom rules
 ```
 
-To begin develop, install and start ModSecurity WAF from https://github.com/ngoctint1lvc/waf.
-
-After running ModSecurity WAF, go to project folder run command
+After starting ModSecurity WAF, go to project folder and run the following commands
 ```
 yarn
 gulp
