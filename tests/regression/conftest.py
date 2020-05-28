@@ -5,9 +5,11 @@ except ImportError:
 import os
 import pytest
 
+
 def pytest_addoption(parser):
     parser.addoption('--config', action='store', default='3.0-nginx')
     parser.addoption('--output', action='store', default='output.csv')
+
 
 def pytest_sessionfinish(session, exitstatus):
     # print(session.config.option.__dict__)
@@ -22,9 +24,6 @@ def pytest_sessionfinish(session, exitstatus):
     '''
 
     print(summary)
-
-    with open("summary.txt", "a") as fd:
-        fd.write(summary)
 
 @pytest.fixture(scope='session')
 def config(request):

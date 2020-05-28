@@ -24,7 +24,7 @@ RUN git clone --depth=1 https://github.com/ngoctint1lvc/ModSecurity-nginx.git /o
 # download and install lua
 RUN apt-get update && \
     apt-get -y install lua5.1 liblua5.1-dev && \
-    ln -s /usr/bin/lua5.1 /usr/bin/lua
+    ln -sf /usr/bin/lua5.1 /usr/bin/lua
 
 RUN (cd /opt/ModSecurity && \
     sh build.sh && \
@@ -53,12 +53,6 @@ RUN ldconfig
 # fix timezone problem
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && \
     ln -fs /usr/share/zoneinfo/UTC /etc/localtime
-
-# debug tools
-RUN apt-get install bfs gdb && \
-    (cd /root && git clone https://github.com/pwndbg/pwndbg && \
-    cd pwndbg && \
-    ./setup.sh)
 
 COPY run.sh /run.sh
 

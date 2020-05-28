@@ -2,7 +2,7 @@ const gulp = require('gulp');
 const childProcess = require('child_process');
 
 const WAF_RULE_DIR = "./waf/openresty/etc/modsecurity-crs";
-const RELOAD_WAF_CMD = "(cd ./waf && docker-compose exec openresty nginx -s reload)";
+const RELOAD_WAF_CMD = "(cd ./waf && docker-compose exec resty nginx -s reload)";
 
 function reloadCustomRule(cb) {
     childProcess.execSync(`cp -r ./custom-rules ${WAF_RULE_DIR}/ && ${RELOAD_WAF_CMD}`, {

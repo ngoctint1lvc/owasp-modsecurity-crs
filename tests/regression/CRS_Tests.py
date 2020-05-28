@@ -1,3 +1,4 @@
+from configparser import Error
 from ftw import logchecker, testrunner
 import datetime
 import pytest
@@ -9,11 +10,12 @@ from .testwriter import CSVWriter
 def test_crs(ruleset, test, logchecker_obj, csv_writer):
     runner = testrunner.TestRunner()
     for stage in test.stages:
+        result, log_data = False, ''
+        error = None
         try:
             result, log_data = runner.run_stage(stage, logchecker_obj)
-        except:
-            result = False
-            log_data = ''
+        except Exception as e:
+            error = e
 
         # write expect
         expect = ""
@@ -31,11 +33,6 @@ def test_crs(ruleset, test, logchecker_obj, csv_writer):
             else:
                 expect += f"- status code: {stage.output.status}\n"
 
-        #     or stage.output.response_contains_str or stage.output.status == 403 or 403 in stage.output.status:
-        #     expect = "BLOCKED"
-        # else:
-        #     expect = "NOT_BLOCKED"
-
         test_data = {
             'id': f"{ruleset.meta['name']}-{csv_writer.numTest}",
             'description': test.test_title,
@@ -47,6 +44,8 @@ def test_crs(ruleset, test, logchecker_obj, csv_writer):
         }
 
         csv_writer.append(test_data)
+        if error:
+            raise error
         assert result
 
 

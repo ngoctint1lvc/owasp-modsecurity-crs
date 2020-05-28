@@ -19,8 +19,9 @@ function extractRule() {
                     rules.push({
                         category: category,
                         description: description,
-                        content_rule: rule
+                        content_rule: rule.replace(/(?<=\W)(block|deny)(?=\s*,)/gm, 'pass')
                     });
+
                     rule = '';
                     description = '';
                 }
@@ -39,7 +40,7 @@ function extractRule() {
             rules.push({
                 category: category,
                 description: description,
-                content_rule: rule
+                content_rule: rule.replace(/(?<=\W)(block|deny)(?=\s*,)/gm, 'pass')
             });
         }
     }

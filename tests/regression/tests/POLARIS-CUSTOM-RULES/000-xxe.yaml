@@ -5,7 +5,8 @@ meta:
   name: "xxe"
   description: "Polaris Custom rules test"
 tests:
-  - test_title: "666666001 - XXE Attack 1"
+  - test_title: "666666001-1"
+    desc: "XXE Attack 1"
     stages:
       - stage:
           input:
@@ -25,7 +26,8 @@ tests:
           output:
             log_contains: 'id "666666001"'
             response_contains: "403 Forbidden"
-  - test_title: "666666001 - XXE Attack 2"
+  - test_title: "666666001-2"
+    desc: "XXE Attack 2"
     stages:
       - stage:
           input:
@@ -45,7 +47,8 @@ tests:
           output:
             log_contains: 'id "666666001"'
             response_contains: "403 Forbidden"
-  - test_title: "666666001 - XXE Attack 3"
+  - test_title: "666666001-3"
+    desc: "XXE Attack 3"
     stages:
       - stage:
           input:
@@ -65,7 +68,8 @@ tests:
           output:
             log_contains: 'id "666666001"'
             response_contains: "403 Forbidden"
-  - test_title: "666666001 - Upload SVG file 1"
+  - test_title: "666666001-4"
+    desc: "Upload SVG file 1"
     stages:
       - stage:
           input:
@@ -85,7 +89,8 @@ tests:
           output:
             log_contains: 'id "666666001"'
             response_contains: "403 Forbidden"
-  - test_title: "666666002 - XInclude Attack 1"
+  - test_title: "666666002-1"
+    desc: "XInclude Attack 1"
     stages:
       - stage:
           input:

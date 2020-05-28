@@ -5,7 +5,8 @@ meta:
   name: "object deserialization"
   description: "Polaris Custom rules test"
 tests:
-  - test_title: "666666007 - Pickle deserialization injection 1"
+  - test_title: "666666007-1"
+    desc: "Pickle deserialization injection 1"
     stages:
       - stage:
           input:
@@ -20,7 +21,8 @@ tests:
           output:
             log_contains: 'id "666666007"'
             response_contains: "403 Forbidden"
-  - test_title: "666666007 - Pickle deserialization injection 2"
+  - test_title: "666666007-2"
+    desc: "Pickle deserialization injection 2"
     stages:
       - stage:
           input:
@@ -34,7 +36,8 @@ tests:
           output:
             log_contains: 'id "666666007"'
             response_contains: "403 Forbidden"
-  - test_title: "666666007 - Pickle deserialization injection 3"
+  - test_title: "666666007-3"
+    desc: "Pickle deserialization injection 3"
     stages:
       - stage:
           input:
@@ -55,7 +58,8 @@ tests:
           output:
             log_contains: 'id "666666007"'
             response_contains: "403 Forbidden"
-  - test_title: "666666008 - Pickle deserialization injection 4"
+  - test_title: "666666008-1"
+    desc: "Pickle deserialization injection 4"
     stages:
       - stage:
           input:
@@ -70,7 +74,8 @@ tests:
           output:
             log_contains: 'id "666666008"'
             response_contains: "403 Forbidden"
-  - test_title: "666666008 - Pickle deserialization injection 5"
+  - test_title: "666666008-2"
+    desc: "Pickle deserialization injection 5"
     stages:
       - stage:
           input:
@@ -84,7 +89,8 @@ tests:
           output:
             log_contains: 'id "666666008"'
             response_contains: "403 Forbidden"
-  - test_title: "666666008 - Pickle deserialization injection 6"
+  - test_title: "666666008-3"
+    desc: "Pickle deserialization injection 6"
     stages:
       - stage:
           input:
@@ -105,7 +111,8 @@ tests:
           output:
             log_contains: 'id "666666008"'
             response_contains: "403 Forbidden"
-  - test_title: "666666009 - PHP deserialization injection in body 1"
+  - test_title: "666666009-1"
+    desc: "PHP deserialization injection in body 1"
     stages:
       - stage:
           input:
@@ -126,7 +133,8 @@ tests:
           output:
             log_contains: 'id "666666009"'
             response_contains: "403 Forbidden"
-  - test_title: "666666009 - PHP deserialization injection in body 2"
+  - test_title: "666666009-2"
+    desc: "PHP deserialization injection in body 2"
     stages:
       - stage:
           input:

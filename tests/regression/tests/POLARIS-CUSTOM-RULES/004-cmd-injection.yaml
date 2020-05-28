@@ -5,7 +5,8 @@ meta:
   name: "command injection"
   description: "Polaris Custom rules test"
 tests:
-  - test_title: "666666010 - Command injection prevent wildcard 1"
+  - test_title: "666666010-1"
+    desc: "Command injection prevent wildcard 1"
     stages:
       - stage:
           input:
@@ -25,7 +26,8 @@ tests:
           output:
             log_contains: 'id "666666010"'
             response_contains: "403 Forbidden"
-  - test_title: "666666010 - Command injection prevent wildcard 2"
+  - test_title: "666666010-2"
+    desc: "Command injection prevent wildcard 2"
     stages:
       - stage:
           input:
@@ -45,7 +47,8 @@ tests:
           output:
             log_contains: 'id "666666010"'
             response_contains: "403 Forbidden"
-  - test_title: "666666010 - Command injection prevent wildcard 3"
+  - test_title: "666666010-3"
+    desc: "Command injection prevent wildcard 3"
     stages:
       - stage:
           input:

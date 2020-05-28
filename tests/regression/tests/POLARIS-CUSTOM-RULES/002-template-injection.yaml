@@ -5,7 +5,8 @@ meta:
   name: "template injection"
   description: "Polaris Custom rules test"
 tests:
-  - test_title: "666666006 - Server side template injection in URI 1"
+  - test_title: "666666006-1"
+    desc: "Server side template injection in URI 1"
     stages:
       - stage:
           input:
@@ -19,7 +20,8 @@ tests:
           output:
             log_contains: 'id "666666006"'
             response_contains: "403 Forbidden"
-  - test_title: "666666006 - Server side template injection in URI 2"
+  - test_title: "666666006-2"
+    desc: "Server side template injection in URI 2"
     stages:
       - stage:
           input:
@@ -33,7 +35,8 @@ tests:
           output:
             log_contains: 'id "666666006"'
             response_contains: "403 Forbidden"
-  - test_title: "666666006 - Server side template injection in URI 3"
+  - test_title: "666666006-3"
+    desc: "Server side template injection in URI 3"
     stages:
       - stage:
           input:
@@ -47,7 +50,8 @@ tests:
           output:
             log_contains: 'id "666666006"'
             response_contains: "403 Forbidden"
-  - test_title: "666666006 - Server side template injection in URI 4"
+  - test_title: "666666006-4"
+    desc: "Server side template injection in URI 4"
     stages:
       - stage:
           input:
@@ -61,7 +65,8 @@ tests:
           output:
             log_contains: 'id "666666006"'
             response_contains: "403 Forbidden"
-  - test_title: "666666006 - Server side template injection in URI 5"
+  - test_title: "666666006-5"
+    desc: "Server side template injection in URI 5"
     stages:
       - stage:
           input:
