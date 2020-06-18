@@ -5,7 +5,7 @@ import pytest
 import re
 import os
 from .testwriter import CSVWriter
-
+import time
 
 def test_crs(ruleset, test, logchecker_obj, csv_writer):
     runner = testrunner.TestRunner()
@@ -75,6 +75,7 @@ class FooLogChecker(logchecker.LogChecker):
     def get_logs(self):
         pattern = re.compile(r'%s' % self.log_date_regex)
         our_logs = []
+        
         for lline in self.reverse_readline(self.log_location):
             # Extract dates from each line
             match = re.match(pattern, lline)
@@ -83,7 +84,7 @@ class FooLogChecker(logchecker.LogChecker):
                 log_date = datetime.datetime.strptime(
                     log_date, self.log_date_format)
                 # NGINX doesn't give us microsecond level by detail, round down.
-                if "%f" not in self.log_date_format:
+                if r"%f" not in self.log_date_format:
                     ftw_start = self.start.replace(microsecond=0)
                 else:
                     ftw_start = self.start
