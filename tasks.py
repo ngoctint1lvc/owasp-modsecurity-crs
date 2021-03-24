@@ -34,9 +34,9 @@ def transform(c, mode='local', domain=None, test='', pattern=''):
     '''
     cookies = 'x_polaris_sid=Axoa45kLya/vDTqCXYvaDg4DnY1pvCdv7PVa; x_polaris_cid=Axoa4FyNcImzdYJIeWFa0rLXYHTC2ZPfbQpI; PHPSESSID=v2cu06n9ndqvkbp6dsvp1np8v3; security=impossible'
     if mode == 'dev':
-        transform_testcase(domain or 'test.acbpro.com', log_check=False, pattern=pattern, cookies=cookies)
+        transform_testcase(domain or 'test.acbpro.com', pattern=pattern, cookies=cookies)
     elif mode == 'local':
-        transform_testcase(domain or 'dvwa.test', log_check=False, pattern=pattern, cookies=cookies)
+        transform_testcase(domain or 'dvwa.test', pattern=pattern, cookies=cookies)
     else:
         print("[+] Invalid WAF mode")
 

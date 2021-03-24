@@ -11,41 +11,9 @@ git checkout polaris
 
 ### Run the WAF
 
-You need to add 2 local domain in `/etc/hosts` file
+You need to add DVWA local domain in `/etc/hosts` file
 ```txt
 127.0.0.1 dvwa.test   # for dvwa server
-127.0.0.1 nginx.test  # for empty nginx server
-```
-
-Then, you have been already to bring all docker service up
-```
-cd waf/
-docker-compose up -d
-```
-
-Go to your browser and go to 2 links below to check whether your setup works
-```
-http://nginx.test
-http://dvwa.test
-```
-
-### Hot reload rules
-
-Custom rules is located at `./custom-rules` folder. You can add more rules inside this folder. To hot reload newly added rules, modify `gulpfile.js` and run gulp command.
-
-All support gulp tasks
-
-```
-[14:10:31] Tasks for /mnt/shared-data/project/owasp-modsecurity-crs/gulpfile.js
-[14:10:31] ├── default  // watching rule files and auto reload WAF
-[14:10:31] ├── reloadCrs    // force to reload CRS
-[14:10:31] └── reloadRule   // force to reload custom rules
-```
-
-After starting ModSecurity WAF, go to project folder and run the following commands
-```
-yarn
-gulp
 ```
 
 ### Prepare testing tool
@@ -112,14 +80,6 @@ tests:
 - Test case for ModSecurity WAF is in `./tests/regression/tests/POLARIS-CUSTOM-RULES/` folder
 - Test case for Polaris Lua WAF is in `./tests/regression/tests/POLARIS-WAF-DEV/` folder
 
-After saving newly added rules, check if gulp is still running and rules is reload. This is example output
-```bash
-[14:49:56] Using gulpfile /mnt/shared-data/project/owasp-modsecurity-crs/gulpfile.js
-[14:49:56] Starting 'default'...
-[14:50:46] Starting 'reloadCustomRule'...
-[14:50:48] Finished 'reloadCustomRule' after 1.76 s
-```
-
 ## Running
 
 ### Running test with ModSecurity WAF
@@ -168,15 +128,3 @@ cd ./tests/regression/
 workon crs-test
 py.test --config waf-lua -v CRS_Tests.py --rule ./polaris-tests/POLARIS-CUSTOM-RULES/
 ```
-
-Log file format, and location of log file can be changed in `./tests/regression/config.ini`
-```ini
-[waf-lua]
-log_date_format = %Y/%m/%d %H:%M:%S
-log_date_regex = (\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2})
-log_location_linux = /tmp/log.txt
-```
-
-Output of test result can be founed at `./tests/regression/output.csv`.
-
-**Note:** If all rules are failed, maybe you have some problem with network or timezone. Try to change WAF timezone to UTC.

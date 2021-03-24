@@ -5,7 +5,7 @@ import re
 
 forbiden_message = 'Your request has been blocked'
 
-def transform(host="dvwa.test", port=80, log_check=True, remove_normal_tests=True, id_regex='"id":"\\1"', pattern='sqli', cookies=''):
+def transform(host="dvwa.test", port=80, id_regex='"id":"\\1"', pattern='sqli', cookies=''):
     current_dir = os.getcwd()
 
     print("[+] Sync testcases from modsecurity")
@@ -48,34 +48,18 @@ def transform(host="dvwa.test", port=80, log_check=True, remove_normal_tests=Tru
                         # add 403 forbiden check
                         # stage["stage"]["output"]["response_contains"] = forbiden_message
                         # stage["stage"]["output"]["status"] = 403
+                        if "response_contains" in stage["stage"]["output"].keys():
+                            del stage["stage"]["output"]["response_contains"]
+
+                        # check rule id in header
                         rule_id = test["test_title"].split("-")[0]
                         stage["stage"]["output"]["header_contains"] = 'x-match-rules: .*?"id":' + rule_id
 
-                        if log_check:
-                            # change id format
-                            if "log_contains" in stage["stage"]["output"].keys():
-                                check_log_msg = stage["stage"]["output"]["log_contains"]
-                                try:
-                                    stage["stage"]["output"]["log_contains"] = re.sub(
-                                        "id ['\"](\\d+)['\"]", id_regex, check_log_msg)
-                                except:
-                                    print(f"[x] Error in {testcase}: {stage}")
+                        if "log_contains" in stage["stage"]["output"].keys():
+                            del stage["stage"]["output"]["log_contains"]
 
-                            if "no_log_contains" in stage["stage"]["output"].keys():
-                                check_log_msg = stage["stage"]["output"]["no_log_contains"]
-                                try:
-                                    stage["stage"]["output"]["no_log_contains"] = re.sub(
-                                        "id ['\"](\\d+)['\"]", id_regex, check_log_msg)
-                                except:
-                                    print(f"[x] Error in {testcase}: {stage}")
-                        else:
-                            if "log_contains" in stage["stage"]["output"].keys():
-                                del stage["stage"]["output"]["log_contains"]
-
-                            if "no_log_contains" in stage["stage"]["output"].keys():
-                                del stage["stage"]["output"]["no_log_contains"]
-                                if remove_normal_tests:
-                                    test["to_be_removed"] = True
+                        if "no_log_contains" in stage["stage"]["output"].keys():
+                            test["to_be_removed"] = True
 
                         # change port
                         if "port" in stage["stage"]["input"].keys():
