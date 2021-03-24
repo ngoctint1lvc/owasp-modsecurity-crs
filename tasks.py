@@ -10,14 +10,6 @@ def cd(dir=None):
 
 cd()
 
-@task
-def waf_start(c):
-    '''
-    Start local ModSecurity WAF for testing
-    '''
-    print("[+] Starting docker-compose")
-    c.run("cd waf && docker-compose up -d")
-
 
 @task
 def update_rule_portal_pro(c):
@@ -35,25 +27,22 @@ def update_rule_portal_dev(c):
     c.run("cd ./util/polaris-addrule && node extract-rule.js && node addrule.js")
 
 
-@task(help={'mode': 'polaris-pro | thesis | polaris-dev | polaris-local'})
-def transform(c, mode='polaris-local', domain=None, test='', pattern=''):
+@task(help={'mode': 'dev | local'})
+def transform(c, mode='local', domain=None, test='', pattern=''):
     '''
     Transform testcase, need to specify mode
     '''
-    if mode == 'polaris-pro':
-        transform_testcase(domain or 'verichains.tech', forbiden_check=True, log_check=False, pattern=pattern)
-    elif mode == 'thesis':
-        transform_testcase(domain or 'nginx.test', forbiden_check=True, log_check=False, remove_normal_tests=True, pattern=pattern)
-    elif mode == 'polaris-dev':
-        transform_testcase(domain or 'ntsec.cf', forbiden_check=False, log_check=True, pattern=pattern)
-    elif mode == 'polaris-local':
-        transform_testcase(domain or 'host1.test', forbiden_check=False, log_check=True, pattern=pattern)
+    cookies = 'x_polaris_sid=Axoa45kLya/vDTqCXYvaDg4DnY1pvCdv7PVa; x_polaris_cid=Axoa4FyNcImzdYJIeWFa0rLXYHTC2ZPfbQpI; PHPSESSID=v2cu06n9ndqvkbp6dsvp1np8v3; security=impossible'
+    if mode == 'dev':
+        transform_testcase(domain or 'test.acbpro.com', log_check=False, pattern=pattern, cookies=cookies)
+    elif mode == 'local':
+        transform_testcase(domain or 'dvwa.test', log_check=False, pattern=pattern, cookies=cookies)
     else:
         print("[+] Invalid WAF mode")
 
 
-@task(help={'mode': 'polaris-pro | thesis | polaris-dev | polaris-local'})
-def test(c, mode='polaris-local', test='custom-rules', k=None, all=False, transform_now=False):
+@task(help={'mode': 'dev | local'})
+def test(c, mode='local', test='custom-rules', k=None, all=False, transform_now=False):
     '''
     Test CRS with multiple WAF mode, need to transform for each mode
     '''
@@ -72,37 +61,9 @@ def test(c, mode='polaris-local', test='custom-rules', k=None, all=False, transf
 @task
 def reload(c):
     '''
-    Reload local integrated ModSecurity WAF
+    Reload local Polaris WAF
     '''
-    c.run("cd ./waf && docker-compose exec resty nginx -s reload")
-
-
-@task(help={"mode": "local dev polaris-local thesis"})
-def log(c, mode='local'):
-    '''
-    Start logging for multiple WAF (local, dev, polaris-local, thesis)
-    '''
-    if mode == 'polaris-local':
-        c.run("docker logs -f --since 1m polaris_proxy_1 &> /tmp/log.txt & tail -f /tmp/log.txt")
-    elif mode == 'dev':
-        c.run("ssh ngoctin@34.73.157.12 docker logs -f --since=1m proxy | grep --line-buffered 'ntsec.cf' &> /tmp/log.txt & tail -f /tmp/log.txt")
-    elif mode == 'local':
-        c.run("cd ./waf && docker-compose logs -f --tail 100 resty")
-    elif mode == 'thesis':
-        c.run(
-            "docker logs -f --since 1m openresty-waf &> /tmp/log.txt & tail -f /tmp/log.txt")
-
-
-@task
-def reload_rule_polaris(c):
-    '''
-    Copy and reload custom rule for local polaris dev WAF
-    '''
-    rules = "/mnt/shared-data/project/polaris/owasp-modsecurity-crs/rules/REQUEST-903-*.conf"
-    polaris_rule_dir = "/mnt/shared-data/project/polaris/polaris/polaris-core/proxy-api/src/core-api/owasp-modsecurity-crs/rules/"
-    c.run(f"cp {rules} {polaris_rule_dir}")
-    cd(polaris_rule_dir)
-    c.run("inv reload-rule")
+    c.run("cd /home/nt/Documents/project/polaris && ./dev.sh compose exec proxy nginx -s reload")
 
 
 @task

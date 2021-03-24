@@ -3,8 +3,9 @@ import os
 import yaml
 import re
 
+forbiden_message = 'Your request has been blocked'
 
-def transform(host="tin.acbpro.com", port=80, forbiden_check=True, log_check=True, remove_normal_tests=False, id_regex='"id":"\\1"', pattern='polaris-custom-rules'):
+def transform(host="dvwa.test", port=80, log_check=True, remove_normal_tests=True, id_regex='"id":"\\1"', pattern='sqli', cookies=''):
     current_dir = os.getcwd()
 
     print("[+] Sync testcases from modsecurity")
@@ -36,16 +37,19 @@ def transform(host="tin.acbpro.com", port=80, forbiden_check=True, log_check=Tru
                         # update host header
                         if "headers" in stage["stage"]["input"].keys() and "Host" in stage["stage"]["input"]["headers"].keys():
                             stage["stage"]["input"]["headers"]["Host"] = host
+                            # update cookies
+                            _cookies = stage["stage"]["input"]["headers"].get("Cookie", "")
+                            if len(_cookies.strip()) > 0:
+                                _cookies += "; " + cookies
+                            else:
+                                _cookies = cookies
+                            stage["stage"]["input"]["headers"]["Cookie"] = _cookies
 
                         # add 403 forbiden check
-                        if forbiden_check:
-                            if "response_contains" not in stage["stage"]["output"].keys() and \
-                                "status" not in stage["stage"]["output"].keys() and \
-                                    "no_log_contains" not in stage["stage"]["output"].keys():
-                                stage["stage"]["output"]["response_contains"] = "403 Forbidden"
-                        else:
-                            if "response_contains" in stage["stage"]["output"].keys() and stage["stage"]["output"]["response_contains"] == "403 Forbidden":
-                                del stage["stage"]["output"]["response_contains"]
+                        # stage["stage"]["output"]["response_contains"] = forbiden_message
+                        # stage["stage"]["output"]["status"] = 403
+                        rule_id = test["test_title"].split("-")[0]
+                        stage["stage"]["output"]["header_contains"] = 'x-match-rules: .*?"id":' + rule_id
 
                         if log_check:
                             # change id format
