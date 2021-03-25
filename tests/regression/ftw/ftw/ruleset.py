@@ -81,7 +81,7 @@ class Output(object):
         Extract the value of key from dictionary if available
         and process it as a python regex
         """
-        return re.compile(self.output_dict[key]) if \
+        return re.compile(self.output_dict[key].encode()) if \
             key in self.output_dict else None
 
 
@@ -124,9 +124,8 @@ class Input(object):
                 headers['Content-Type'] = 'application/x-www-form-urlencoded'
             # check if encoded and encode if it should be
             if 'Content-Type' in headers.keys():
-                if headers['Content-Type'] == \
-                   'application/x-www-form-urlencoded' and stop_magic is False:
-                    if ensure_str(unquote(self.data)) == self.data:
+                if headers['Content-Type'] == 'application/x-www-form-urlencoded' and stop_magic is False:
+                    if unquote(self.data) == self.data:
                         query_string = parse_qsl(self.data)
                         if len(query_string) != 0:
                             encoded_args = urlencode(query_string)

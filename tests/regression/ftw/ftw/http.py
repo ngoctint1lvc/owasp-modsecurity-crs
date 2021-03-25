@@ -201,7 +201,7 @@ class HttpResponse(object):
         Parses an HTTP response after an HTTP request is sent
         """
         split_response = self.response.split(self.CRLF)
-        response_line = ensure_str(split_response[0])
+        response_line = split_response[0]
         response_headers = {}
         response_data = None
         data_line = None
@@ -220,7 +220,7 @@ class HttpResponse(object):
                             'header_rcvd': str(header),
                             'function': 'http.HttpResponse.process_response'
                         })
-                header = ensure_str(header[0]), ensure_str(header[1])
+                header = header[0], header[1]
                 response_headers[header[0].lower()] = header[1].lstrip()
         if 'set-cookie' in response_headers.keys():
             try:
@@ -255,7 +255,7 @@ class HttpResponse(object):
         if 'content-encoding' in response_headers.keys():
             response_data = self.parse_content_encoding(
                 response_headers, response_data)
-        if len(response_line.split(' ', 2)) != 3:
+        if len(response_line.split(b' ', 2)) != 3:
             raise errors.TestError(
                 'The HTTP response line returned the wrong args',
                 {
@@ -263,7 +263,7 @@ class HttpResponse(object):
                     'function': 'http.HttpResponse.process_response'
                 })
         try:
-            self.status = int(response_line.split(' ', 2)[1])
+            self.status = int(response_line.split(b' ', 2)[1])
         except ValueError:
             raise errors.TestError(
                 'The status num of the response line isn\'t convertable',
@@ -273,8 +273,8 @@ class HttpResponse(object):
                     'response_line': str(response_line),
                     'function': 'http.HttpResponse.process_response'
                 })
-        self.status_msg = response_line.split(' ', 2)[2]
-        self.version = response_line.split(' ', 2)[0]
+        self.status_msg = response_line.split(b' ', 2)[2]
+        self.version = response_line.split(b' ', 2)[0]
         self.response_line = response_line
         self.headers = response_headers
         self.data = response_data
@@ -296,7 +296,7 @@ class HttpUA(object):
         self.CIPHERS = \
             'ADH-AES256-SHA:ECDHE-ECDSA-AES128-GCM-SHA256:' \
             'ECDHE-RSA-AES128-GCM-SHA256:AES128-GCM-SHA256:AES128-SHA256:HIGH:'
-        self.CRLF = '\r\n'
+        self.CRLF = b'\r\n'
         self.HTTP_TIMEOUT = .3
         self.RECEIVE_BYTES = 8192
         self.SOCKET_TIMEOUT = 5
@@ -375,15 +375,15 @@ class HttpUA(object):
         return return_cookies
 
     def build_request(self):
-        request = '#method# #uri##version#%s#headers#%s#data#' % \
+        request = b'#method# #uri##version#%s#headers#%s#data#' % \
                   (self.CRLF, self.CRLF)
         request = request.replace(
-            '#method#', self.request_object.method)
+            b'#method#', (self.request_object.method).encode())
         # We add a space after here to account for HEAD requests with no url
         request = request.replace(
-            '#uri#', self.request_object.uri + ' ')
+            b'#uri#', (self.request_object.uri + ' ').encode())
         request = request.replace(
-            '#version#', self.request_object.version)
+            b'#version#', (self.request_object.version).encode())
         available_cookies = self.find_cookie()
         # If the user has requested a tracked cookie and we have one set it
         if available_cookies:
@@ -433,12 +433,11 @@ class HttpUA(object):
                     self.request_object.headers['cookie'] = cookie_value
 
         # Expand out our headers into a string
-        headers = ''
+        headers = b''
         if self.request_object.headers != {}:
             for hname, hvalue in iteritems(self.request_object.headers):
-                headers += text_type(hname) + ': ' + \
-                    text_type(hvalue) + self.CRLF
-        request = request.replace('#headers#', headers)
+                headers += str(hname).encode() + b': ' + str(hvalue).encode() + self.CRLF
+        request = request.replace(b'#headers#', headers)
 
         # If we have data append it
         if self.request_object.data != '':
@@ -473,9 +472,9 @@ class HttpUA(object):
                         'data': text_type(self.request_object.data),
                         'function': 'http.HttpResponse.build_request'
                     })
-            request = request.replace('#data#', ensure_str(data))
+            request = request.replace(b'#data#', data)
         else:
-            request = request.replace('#data#', '')
+            request = request.replace(b'#data#', b'')
         # If we have a Raw Request we should use that instead
         if self.request_object.raw_request is not None:
             if self.request_object.encoded_request is not None:

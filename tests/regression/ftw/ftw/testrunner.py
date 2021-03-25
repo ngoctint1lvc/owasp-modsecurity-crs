@@ -60,7 +60,7 @@ class TestRunner(object):
                     'response_object': response_object,
                     'function': 'testrunner.TestRunner.test_response'
                 })
-        if regex.search(ensure_str(response_object.response, errors="ignore")):
+        if regex.search(response_object.response):
             assert True
         else:
             assert False
@@ -70,7 +70,7 @@ class TestRunner(object):
         Checks if the response response contains a regex specified in the
         output stage. It will assert that the regex is present.
         """
-        if regex.search(ensure_str(response, errors="ignore")):
+        if regex.search(response):
             assert True
         else:
             assert False
@@ -88,9 +88,9 @@ class TestRunner(object):
                     'response_object': response_object,
                     'function': 'testrunner.TestRunner.test_response'
                 })
-        headers_str = "\n".join([key + ": " + response_object.headers.get(key, "") for key in response_object.headers.keys()])
+        headers_str = b"\n".join([key + b": " + response_object.headers.get(key, b"") for key in response_object.headers.keys()])
         # assert regex == False
-        if regex.search(ensure_str(headers_str, errors="ignore")):
+        if regex.search(headers_str):
             assert True
         else:
             assert False

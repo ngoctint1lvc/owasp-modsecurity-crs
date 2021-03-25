@@ -9,14 +9,12 @@ def transform(host="dvwa.test", port=80, id_regex='"id":"\\1"', pattern='sqli', 
     current_dir = os.getcwd()
 
     print("[+] Sync testcases from modsecurity")
-    test_regression_dir = os.path.abspath(os.path.join(
-        os.path.dirname(__file__), "../../tests/regression"))
+    test_regression_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../tests/regression"))
     os.chdir(test_regression_dir)
     os.system("rsync -avh tests/* transformed-tests")
 
     print("[+] Transform testcase for polaris waf")
-    testcases = glob.glob(os.path.join(
-        test_regression_dir, f"transformed-tests/*{pattern.upper()}*/*.yaml"))
+    testcases = glob.glob(os.path.join(test_regression_dir, f"transformed-tests/*{pattern.upper()}*/*.yaml"))
     for testcase in testcases:
         print(f" [+] Transform testcase {testcase}")
         data = ''
