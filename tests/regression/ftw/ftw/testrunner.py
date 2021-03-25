@@ -193,7 +193,7 @@ class TestRunner(object):
                                     end, response, status, i))
                 conn.commit()
 
-    def run_stage(self, stage: Stage, logger_obj: LogChecker = None, http_ua: HttpUA = None) -> Tuple[bool, str]:
+    def run_stage(self, stage: Stage, logger_obj: LogChecker = None, http_ua: HttpUA = None, request_log_file: str = "") -> Tuple[bool, str]:
         """
         Runs a stage in a test by building an httpua object with the stage
         input, waits for output then compares expected vs actual output
@@ -207,14 +207,14 @@ class TestRunner(object):
         if stage.output.expect_error:
             with pytest.raises(errors.TestError) as excinfo:
                 if not http_ua:
-                    http_ua = http.HttpUA()
+                    http_ua = http.HttpUA(request_log_file)
                 start = datetime.datetime.utcnow()
                 http_ua.send_request(stage.input)
                 end = datetime.datetime.utcnow()
             print('\nExpected Error: %s' % str(excinfo))
         else:
             if not http_ua:
-                http_ua = http.HttpUA()
+                http_ua = http.HttpUA(request_log_file)
             start = datetime.datetime.utcnow()
             http_ua.send_request(stage.input)
             end = datetime.datetime.utcnow()

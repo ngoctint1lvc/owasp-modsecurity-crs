@@ -284,7 +284,7 @@ class HttpUA(object):
     """
     Act as the User Agent for our regression testing
     """
-    def __init__(self):
+    def __init__(self, _request_log_file: str = ""):
         """
         Initalize an HTTP object
         """
@@ -300,6 +300,12 @@ class HttpUA(object):
         self.HTTP_TIMEOUT = .3
         self.RECEIVE_BYTES = 8192
         self.SOCKET_TIMEOUT = 5
+        self.request_log_file = _request_log_file
+    
+    def save_request(self, request):
+        if self.request_log_file:
+            with open(self.request_log_file, "ab") as fd:
+                fd.write(request + b"\n=========================\n")
 
     def send_request(self, http_request):
         """
@@ -309,6 +315,7 @@ class HttpUA(object):
         self.build_socket()
         self.build_request()
         try:
+            self.save_request(self.request)
             self.sock.send(self.request)
         except socket.error as err:
             raise errors.TestError(

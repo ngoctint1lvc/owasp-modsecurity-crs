@@ -55,6 +55,11 @@ def transform(host="dvwa.test", port=80, id_regex='"id":"\\1"', pattern='sqli', 
                         rule_id = test["test_title"].split("-")[0]
                         stage["stage"]["output"]["header_contains"] = 'x-match-rules: .*?"id":' + rule_id
 
+                        # add x-test-id header for debugging
+                        if not "headers" in stage["stage"]["input"].keys():
+                            stage["stage"]["input"]["headers"] = {"x-test-id": ""}
+                        stage["stage"]["input"]["headers"]["x-test-id"] = test["test_title"]
+
                         if "log_contains" in stage["stage"]["output"].keys():
                             del stage["stage"]["output"]["log_contains"]
 

@@ -7,13 +7,14 @@ import os
 from .testwriter import CSVWriter
 import time
 
-def test_crs(ruleset, test, logchecker_obj, csv_writer):
+def test_crs(ruleset, test, logchecker_obj, csv_writer, config):
     runner = testrunner.TestRunner()
     for stage in test.stages:
         result, log_data = False, ''
         error = None
         try:
-            result, log_data = runner.run_stage(stage, logchecker_obj)
+            # remove request_log_file before running
+            result, log_data = runner.run_stage(stage, logchecker_obj, request_log_file=config['request_log_file'])
         except Exception as e:
             error = e
 
