@@ -1,38 +1,38 @@
 import yaml
 import re
 
-with open("./input.txt", "r") as fd:
+with open("./input.txt", "rb") as fd:
     input_request = fd.read()
 
 print(input_request)
 
 def get_request_info():
     global input_request
-    data = re.search("^(\\w+)\\s+([^\\s]+)\\s+(HTTP.*)$", input_request, re.M)
+    data = re.search(b"^(\\w+)\\s+([^\\s]+)\\s+(HTTP.*?)\r?$", input_request, re.M)
 
     return data.group(1), data.group(3), data.group(2)
 
 def get_method():
     global input_request
-    return re.search("^(\\w+)\\s", input_request, re.M).group(1)
+    return re.search(b"^(\\w+)\\s", input_request, re.M).group(1)
 
 def get_version():
     global input_request
-    return re.search("(HTTP.*)$", input_request, re.M).group(1)
+    return re.search(b"(HTTP.*)$", input_request, re.M).group(1)
 
 def get_header(header):
     global input_request
     # header = header.replace("-", "\\-")
     # print(f"^{header}: (.*)$")
-    result = re.search(f"^{header}: (.*)$", input_request, re.I + re.M)
+    result = re.search(b"^" + header.encode() + b": (.*?)\r?$", input_request, re.I + re.M)
     if result:
         return result.group(1)
 
-    return ""
+    return b""
 
 def get_body():
     global input_request
-    return re.search("\n\n(.*)", input_request, re.M).group(1)
+    return re.search(b"\r?\n\r?\n(.*)", input_request, re.M).group(1)
 
 method, version, uri = get_request_info()
 request = {}
@@ -46,16 +46,16 @@ request["stages"] = [
                 "port": 80,
                 "headers": {
                     "Host": "localhost",
-                    "User-Agent": get_header("User-Agent"),
-                    "Accept": get_header("Accept"),
-                    "Accept-Encoding": get_header("Accept-Encoding"),
-                    "Accept-Language": get_header("Accept-Language"),
-                    "Content-Type": get_header("Content-Type"),
-                    "Cookie": get_header("Cookie")
+                    "User-Agent": get_header("User-Agent").decode(),
+                    "Accept": get_header("Accept").decode(),
+                    "Accept-Encoding": get_header("Accept-Encoding").decode(),
+                    "Accept-Language": get_header("Accept-Language").decode(),
+                    "Content-Type": get_header("Content-Type").decode(),
+                    "Cookie": get_header("Cookie").decode()
                 },
-                "method": method,
-                "version": version,
-                "uri": uri,
+                "method": method.decode(),
+                "version": version.decode(),
+                "uri": uri.decode(),
                 "data": get_body()
             },
             "output": {

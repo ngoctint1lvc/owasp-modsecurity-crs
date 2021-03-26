@@ -72,4 +72,4 @@ def request2yaml(c):
     Allow to convert raw HTTP request to YAML testcase format
     '''
     cd("./util/request2yaml/")
-    c.run("code -w -n ./input.txt; python convert.py; code ./output.yaml")
+    c.run("code -w -n ./input.txt; python3 convert.py; code ./output.yaml")
