@@ -440,7 +440,7 @@ class HttpUA(object):
         request = request.replace(b'#headers#', headers)
 
         # If we have data append it
-        if self.request_object.data != '':
+        if self.request_object.data != b'':
             # Before we do that see if that is a charset
             encoding = "utf-8"
             # Check to see if we have a content type and magic is
@@ -460,18 +460,9 @@ class HttpUA(object):
                     choice = choice.lower()
                     if choice in possible_choices:
                         encoding = choice
-            try:
-                data = self.request_object.data.encode(encoding)
-            except UnicodeEncodeError as err:
-                raise errors.TestError(
-                    'Error encoding the data with the charset specified',
-                    {
-                        'msg': str(err),
-                        'Content-Type':
-                            str(self.request_object.headers['Content-Type']),
-                        'data': text_type(self.request_object.data),
-                        'function': 'http.HttpResponse.build_request'
-                    })
+            
+            request_data = self.request_object.data
+            data = request_data.encode(encoding) if isinstance(request_data, str) else request_data
             request = request.replace(b'#data#', data)
         else:
             request = request.replace(b'#data#', b'')

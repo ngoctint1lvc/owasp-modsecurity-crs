@@ -112,6 +112,7 @@ class Input(object):
         self.version = version
         self.headers = headers
         self.data = data
+
         # Support data in list format and join on CRLF
         if isinstance(self.data, list):
             self.data = '\r\n'.join(self.data)
@@ -124,12 +125,13 @@ class Input(object):
                 headers['Content-Type'] = 'application/x-www-form-urlencoded'
             # check if encoded and encode if it should be
             if 'Content-Type' in headers.keys():
-                if headers['Content-Type'] == 'application/x-www-form-urlencoded' and stop_magic is False:
-                    if unquote(self.data) == self.data:
-                        query_string = parse_qsl(self.data)
-                        if len(query_string) != 0:
-                            encoded_args = urlencode(query_string)
-                            self.data = encoded_args
+                # if headers['Content-Type'] == 'application/x-www-form-urlencoded' and stop_magic is False:
+                #     if unquote(self.data) == self.data:
+                #         query_string = parse_qsl(self.data)
+                #         if len(query_string) != 0:
+                #             encoded_args = urlencode(query_string)
+                #             self.data = encoded_args
+                pass
             if 'Content-Length' not in headers.keys() and stop_magic is False:
                 # The two is for the trailing CRLF and the one after
                 headers['Content-Length'] = len(self.data)
