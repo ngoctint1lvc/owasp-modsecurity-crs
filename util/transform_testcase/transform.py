@@ -46,6 +46,9 @@ def transform(host="dvwa.test", port=80, id_regex='"id":"\\1"', pattern='sqli', 
                         # add 403 forbiden check
                         # stage["stage"]["output"]["response_contains"] = forbiden_message
                         # stage["stage"]["output"]["status"] = 403
+                        if "status" in stage["stage"]["output"].keys():
+                            del stage["stage"]["output"]["status"]
+
                         if "response_contains" in stage["stage"]["output"].keys():
                             del stage["stage"]["output"]["response_contains"]
 

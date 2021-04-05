@@ -7,7 +7,6 @@ def cd(dir=None):
     working_dir = dir or os.path.abspath(os.path.dirname(__file__))
     os.chdir(working_dir)
 
-
 cd()
 
 
@@ -49,6 +48,7 @@ def test(c, mode='local', test='custom-rules', k=None, all=False, transform_now=
     if transform_now:
         transform(c, mode, pattern=test)
 
+    cd()
     print("[+] Current test mode:", mode)
     cd("./tests/regression")
     if all:
@@ -67,9 +67,9 @@ def reload(c):
 
 
 @task
-def request2yaml(c):
+def request2yaml(c, rule_id="232380"):
     '''
     Allow to convert raw HTTP request to YAML testcase format
     '''
     cd("./util/request2yaml/")
-    c.run("code -w -n ./input.txt; python3 convert.py; code ./output.yaml")
+    c.run(f"python3 convert.py {rule_id}")
